@@ -1,5 +1,6 @@
 plugins {
-    java
+    kotlin("jvm") version "1.5.20"
+    kotlin("plugin.allopen") version "1.5.20"
     id("io.quarkus")
 }
 
@@ -18,10 +19,15 @@ dependencies {
     implementation("io.quarkus:quarkus-resteasy")
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")
+    implementation("io.quarkus:quarkus-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.20")
+
+    // Our when2meat deps
+    implementation("com.expediagroup:graphql-kotlin-maven-plugin:5.0.0-alpha.4")
 }
 
 group = "me.alanp"
-version = "1.0.0-SNAPSHOT"
+version = "2.2.2.Final"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -31,4 +37,15 @@ java {
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.compilerArgs.add("-parameters")
+}
+
+allOpen {
+    annotation("javax.ws.rs.Path")
+    annotation("javax.enterprise.context.ApplicationScoped")
+    annotation("io.quarkus.test.junit.QuarkusTest")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+    kotlinOptions.javaParameters = true
 }
